@@ -57,7 +57,7 @@ public class CrimeFragment extends Fragment {
         mDateButton = (Button) v.findViewById(R.id.crime_date);
         java.text.SimpleDateFormat mDateFormatter;
         //Create a SimpleDateFormat object and format date to include day of week
-        mDateFormatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        mDateFormatter = new SimpleDateFormat("EEEE, MMM d, yyyy");
         mDateButton.setText(mDateFormatter.format(mCrime.getDate()));
         mDateButton.setEnabled(false);
 
