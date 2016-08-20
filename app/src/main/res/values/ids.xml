@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="menu_item_new_crime" type="id">drawable</item>
+    <item name="menu_item_show_subtitle" type="id">string</item>
+    <item name="menu_item_delete_crime" type="id">drawable</item>
 </resources>
