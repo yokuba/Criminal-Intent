@@ -36,6 +36,7 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateButton;
     private Button mTimeButton;
+    private Button mDeleteButton;
     private CheckBox mSolvedCheckBox;
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -102,6 +103,7 @@ public class CrimeFragment extends Fragment {
                 dialog.show(manager, DIALOG_TIME);
             }
         });
+
 
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
