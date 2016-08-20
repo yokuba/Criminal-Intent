@@ -117,7 +117,7 @@ public class CrimeFragment extends Fragment {
     private void updateTime() {
         mTimeButton.setText(DateFormat.format("h:mm a", mCrime.getDate()));
     }
-    
+
 
     private void updateDate() {
         java.text.SimpleDateFormat mDateFormatter;
