@@ -164,7 +164,7 @@ public class CrimeFragment extends Fragment {
             case R.id.menu_item_delete_crime:
                     Toast.makeText(getActivity(), "Deleting this crime", Toast.LENGTH_SHORT).show();
                     CrimeLab.get(getActivity()).deleteCrime(mCrime);
-                    getActivity().finish();
+                    this.getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
