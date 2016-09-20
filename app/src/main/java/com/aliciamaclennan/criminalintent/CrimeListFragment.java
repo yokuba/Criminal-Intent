@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -23,10 +24,12 @@ import java.util.List;
 public class CrimeListFragment extends Fragment{
 
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
-    private RecyclerView mCrimeRecyclerView;
+    private EmptyRecyclerView mCrimeRecyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
     private int mLastAdapterClickPosition = -1;
+    private Button mCrimeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,9 +41,25 @@ public class CrimeListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-
-        mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
+        View emptyView = view.findViewById(R.id.empty);
+        mCrimeRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCrimeRecyclerView.checkIfEmpty();
+        mCrimeRecyclerView.setEmptyView(emptyView);
+        mCrimeButton = (Button)view.findViewById(R.id.empty_button);
+        mCrimeButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(),
+                        crime.getId());
+                startActivity(intent);
+            }
+        });
+
 
         if (savedInstanceState != null) {
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
@@ -52,6 +71,7 @@ public class CrimeListFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        mCrimeRecyclerView.checkIfEmpty();
         updateUI();
     }
 
@@ -156,7 +176,7 @@ public class CrimeListFragment extends Fragment{
         }
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends EmptyRecyclerView.Adapter<CrimeHolder> {
 
         private List<Crime> mCrimes;
 
