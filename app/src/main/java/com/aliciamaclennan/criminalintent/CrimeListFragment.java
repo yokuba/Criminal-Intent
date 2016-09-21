@@ -25,10 +25,8 @@ public class CrimeListFragment extends Fragment{
 
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
     private EmptyRecyclerView mCrimeRecyclerView;
-    private LinearLayoutManager mLinearLayoutManager;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
-    private int mLastAdapterClickPosition = -1;
     private Button mCrimeButton;
 
     @Override
@@ -160,7 +158,6 @@ public class CrimeListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
-            mLastAdapterClickPosition = getAdapterPosition();
             Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
