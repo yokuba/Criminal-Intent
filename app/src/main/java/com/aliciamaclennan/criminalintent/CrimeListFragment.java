@@ -146,25 +146,12 @@ public class CrimeListFragment extends Fragment{
             mTitleTextView.setText(mCrime.getTitle());
             mDateTextView.setText(mCrime.getDate().toString());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
-
-
-
             mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     mCrime.setSolved(isChecked);
                 }
             });
-
-
-
-
-
-
-
-
-
-
         }
 
         public CrimeHolder (View itemView) {
