@@ -6,11 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.aliciamaclennan.criminalintent.database.CrimeBaseHelper;
-import com.aliciamaclennan.criminalintent.database.CrimeDbSchema;
+import com.aliciamaclennan.criminalintent.database.CrimeCursorWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.aliciamaclennan.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 /**
  * Created by amac on 8/15/16.
@@ -35,7 +37,7 @@ public class CrimeLab {
 
     public void addCrime(Crime c) {
         ContentValues values = getContentValues(c);
-        mDatabase.insert(CrimeDbSchema.CrimeTable.NAME, null, values);
+        mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
     public void deleteCrime(Crime c) {
@@ -43,35 +45,62 @@ public class CrimeLab {
 
 
     public List<Crime> getCrimes() {
-        return new ArrayList<>();
+        List<Crime> crimes = new ArrayList<>();
+        CrimeCursorWrapper cursor = queryCrimes(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                crimes.add(cursor.getCrime());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return crimes;
     }
 
     public Crime getCrime(UUID id) {
-        return null;
+        CrimeCursorWrapper cursor = queryCrimes(
+                CrimeTable.Cols.UUID + " = ?",
+                new String[] { id.toString() }
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getCrime();
+        } finally {
+            cursor.close();
+        }
+
     }
 
     public void updateCrime(Crime crime) {
         String uuidString = crime.getId().toString();
         ContentValues values = getContentValues(crime);
 
-        mDatabase.update(CrimeDbSchema.CrimeTable.NAME, values,
-                CrimeDbSchema.CrimeTable.Cols.UUID + " = ?",
+        mDatabase.update(CrimeTable.NAME, values,
+                CrimeTable.Cols.UUID + " = ?",
                 new String[] { uuidString });
     }
 
     private static ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();
-        values.put(CrimeDbSchema.CrimeTable.Cols.UUID, crime.getId().toString());
-        values.put(CrimeDbSchema.CrimeTable.Cols.TITLE, crime.getTitle());
-        values.put(CrimeDbSchema.CrimeTable.Cols.DATE, crime.getDate().getTime());
-        values.put(CrimeDbSchema.CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0 );
+        values.put(CrimeTable.Cols.UUID, crime.getId().toString());
+        values.put(CrimeTable.Cols.TITLE, crime.getTitle());
+        values.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
+        values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0 );
 
         return values;
     }
 
-    private Cursor queryCrimes(String whereClause, String[] whereArgs) {
+    private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
-                CrimeDbSchema.CrimeTable.NAME,
+                CrimeTable.NAME,
                 null,
                 whereClause,
                 whereArgs,
@@ -79,6 +108,6 @@ public class CrimeLab {
                 null,
                 null
         );
-                return cursor;
+                return new CrimeCursorWrapper(cursor);
     }
 }
